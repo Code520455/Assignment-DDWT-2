@@ -1,0 +1,55 @@
+﻿@using WebMatrix.Data
+
+
+@{
+    var db = Database.Open("FoodDB");
+    //var sql = "select * from orders join channels on orders. = deliveries.delivery_order_id where order_id = @0";
+    var sql = "select * from orders as o\r\njoin payments as p\r\non o.order_amount = p.payment_amount\r\njoin channels as c\r\non o.channel_id = c.channel_id\r\njoin stores as s\r\non s.store_id = o.store_id where order_id = 71146498 order by payment_method ";
+    //var recordID = Request.QueryString["id"];
+    var i = db.QuerySingle(sql);
+
+}
+<h2>Payment Analysis</h2>
+
+
+
+<div class="card" style="width: 18rem; margin:10px; padding:0 0">
+    <h5>Payment Details</h5>
+    <p class="card-text">Driver ID:@i.payment_id</p>
+    <p class="card-text">Driver Modal:@i.payment_order_id</p>
+    <p class="card-text">Driver Type:@i.payment_amount</p>
+    <p class="card-text">Driver Type:@i.payment_fee</p>
+    <p class="card-text">Driver Type:@i.payment_method</p>
+</div>
+<div class="card" style="width: 18rem; margin:10px; padding:0 0">
+    <h5>Order Details</h5>
+    <p class="card-title">Order ID:@i.order_id</p>
+    <p class="card-text">Order Status:@i.order_status</p>
+    <p class="card-text">Order Amount:@i.order_amount</p>
+
+</div>
+<div class="card" style="width: 18rem; margin:10px; padding:0 0">
+
+    <h5>Channel Details</h5>
+    <p class="card-text">Channel ID:@i.channel_id</p>
+    <p class="card-text">Channel Name:@i.channel_name</p>
+    <p class="card-text">Cahnnel Type:@i.channel_type</p>
+</div>
+<div class="card" style="width: 18rem; margin:10px; padding:0 0">
+
+    <h5>Store Details</h5>
+    <p class="card-text">Delivery ID:@i.store_id</p>
+    <p class="card-text">Delivery Order ID:@i.store_name</p>
+    <p class="card-text">Delivery Status:@i.store_segment</p>
+    <p class="card-text">Delivery Status:@i.store_plan_price</p>
+    <p class="card-text">Delivery Status:@i.store_latitude</p>
+
+
+
+
+
+</div>
+
+
+</div>
+

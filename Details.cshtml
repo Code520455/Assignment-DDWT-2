@@ -1,0 +1,99 @@
+﻿@using WebMatrix.Data
+
+@{
+    var db = Database.Open("FoodDB");
+    //var sql = "select * from orders join channels on orders. = deliveries.delivery_order_id where order_id = @0";
+    var sql = "select * from drivers as d join deliveries as deli on d.driver_id = deli.driver_id join orders as o on deli.delivery_order_id = o.order_id join payments as p on o.order_id = p.payment_order_id join channels as c on o.channel_id = c.channel_id where order_id=@0";
+    var recordID = Request.QueryString["id"];
+    var i = db.QuerySingle(sql, recordID);
+
+}
+
+
+<main class="container">
+    <div class="jumbotron pt-1 pb-1 mt-2">
+        <h2 class="text-center">Details Page</h2>
+    </div>
+
+    <form class="rown form-group" method="post" action="/Home/Details?id">
+        <div class="row justify-content-start">
+        </div>
+    </form>
+
+    @if (i != null)
+    {
+        <div class="row justify-content-center">
+
+            <div class="card-deck col-10 ">
+                <h6>Order Details</h6>
+                <p class="card-title">Order ID:@i.order_id</p>
+                <p class="card-text">Order Status:@i.order_status</p>
+                <p class="card-text">Order Amount:@i.order_amount</p>
+                <p class="card-text">Delivery ID:@i.delivery_id</p>
+                <p class="card-text">Delivery Order ID:@i.delivery_order_id</p>
+                <p class="card-text">Delivery Status:@i.delivery_status</p>
+                
+
+                <h6>Channel Details</h6>
+        <p class="card-text">Channel ID:@i.channel_id</p>
+        <p class="card-text">Channel Name:@i.channel_name</p>
+        <p class="card-text">Cahnnel Type:@i.channel_type</p>
+        <h6>Delivery Details</h6>
+        <p class="card-text">Delivery ID:@i.delivery_id</p>
+        <p class="card-text">Delivery Order ID:@i.delivery_order_id</p>
+        <p class="card-text">Delivery Status:@i.delivery_status</p>
+        <h6>Driver Details</h6>
+        <p class="card-text">Driver ID:@i.driver_id</p>
+        <p class="card-text">Driver Modal:@i.driver_modal</p>
+        <p class="card-text">Driver Type:@i.driver_type</p>
+
+            </div>
+
+            @*<div class="row justify-content-start">*@
+                @*<div class="card-body ">
+                    <img src="@i.itemimage" class="card-img-top" alt=" @data.itemname">
+
+                </div>
+            </div>*@
+        </div>
+    }
+    else
+    {
+        <h2 class="text-danger text-center">Oops - That product was not found!</h2>
+
+    }
+
+</main>
+
+    @*<form method="post" action="/Home/Index/Details">
+        <input type="text" name="searchText" class="form-control" placeholder="SearchText" />
+        <button type="submit" class="btn btn-primary">Search</button>
+        <div class="row">
+    <div class="col-3 justify-content-center">
+        @foreach (var i in output)
+        {
+            <div class="card">
+
+                <div class="card-body">
+                    <h6>Order Details</h6>
+                    <p class="card-title">Order ID:@i.order_id</p>
+                    <p class="card-text">Order Status:@i.order_status</p>
+                    <p class="card-text">Order Amount:@i.order_amount</p>
+
+                    <h6>Channel Details</h6>
+                    <p class="card-text">Channel ID:@i.channel_id</p>
+                    <p class="card-text">Channel Name:@i.channel_name</p>
+                    <p class="card-text">Cahnnel Type:@i.channel_type</p>
+                    <h6>Delivery Details</h6>
+                    <p class="card-text">Delivery ID:@i.delivery_id</p>
+                    <p class="card-text">Delivery Order ID:@i.delivery_order_id</p>
+                    <p class="card-text">Delivery Status:@i.delivery_status</p>
+                    <h6>Driver Details</h6>
+                    <p class="card-text">Driver ID:@i.driver_id</p>
+                    <p class="card-text">Driver Modal:@i.driver_modal</p>
+                    <p class="card-text">Driver Type:@i.driver_type</p>
+                </div>
+            </div>
+        }
+    </div>
+</main>*@

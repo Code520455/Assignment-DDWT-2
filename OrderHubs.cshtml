@@ -1,0 +1,77 @@
+﻿@using WebMatrix.Data;
+
+@{
+    var db = Database.Open("FoodDB");
+
+    var sql = "select * from orders as o\r\njoin stores as s\r\non o.store_id = s.store_id\r\njoin hubs as h\r\non h.hub_id = s.hub_id\r\n where h.hub_id LIKE CONCAT(@0, '%') order by h.hub_id ";
+
+    if (IsPost)
+    {
+        var dSql = "Delete from hubs where hub_id=@0";
+        var dDATA = db.Execute(dSql, Request.Form["delete"]);
+        if(dDATA == 1)
+                {
+                    <div class="alert-warning">Record Deleted!</div>
+                }
+           }
+    var data = db.Query(sql, Request.Form["SearchText"]);
+}
+
+@*@using WebMatrix.Data
+
+    @{
+        var db = Database.Open("FoodDB");
+        //var sql = "select * from orders join channels on orders. = deliveries.delivery_order_id where order_id = @0";
+        var sql = "select * from orders as o\r\njoin stores as s\r\non o.store_id = s.store_id\r\njoin hubs as h\r\non h.hub_id = s.hub_id\r\norder by h.hub_id; order_id =@0";
+        var recordID = Request.QueryString["id"];
+        var i = db.QuerySingle(sql, recordID);
+
+    }*@
+@if (data.Count() > 0)
+{
+
+    <div class="row justify-content-center">
+
+        <table class="table table-striped ">
+            <thead>
+                <tr>
+                    <th scope="col">Order_ID</th>
+                    <th scope="col">Hub_ID</th>
+                    <th scope="col">Hub_Name</th>
+                    <th scope="col">Order_Amount($)</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+
+            @foreach (var row in data)
+            {
+ 
+
+
+
+
+                <tbody>
+                    <tr>
+                        <th scope="row">@row.order_id</th>
+                        <th scope="row">@row.hub_id</th>
+                        <th scope="row">@row.hub_name</th>
+                        <th scope="row">@row.order_amount.ToString("C")</th>
+                        
+
+                        <th>
+                            <a class="btn btn-primary" href="" role="button" @row.hub_id>Edit </a>
+                            <button type="submit" name="delete" class="btn btn-outline-danger" value="@row.hub_id">Delete</button>
+                        </th>
+                    </tr>
+                </tbody>
+
+
+            }
+        </table>
+    </div>
+}
+else
+{
+    <h2 class="text-danger"> Ooops.....No matching records were returned!</h2>
+}
+<h2>Hub Orders Report</h2>
