@@ -1,38 +1,37 @@
 ﻿@using WebMatrix.Data;
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="../Scripts/jquery-3.5.1.js"></script>
+<script src="../Scripts/bootstrap.js"></script>
+<script src="../Scripts/popper.js"></script>
 @{
     var db = Database.Open("FoodDB");
-
-    var sql = "select * from orders as o\r\njoin stores as s\r\non o.store_id = s.store_id\r\njoin hubs as h\r\non h.hub_id = s.hub_id\r\n where h.hub_id LIKE CONCAT(@0, '%') order by h.hub_id ";
+    var sql = "select * from orders_new as o\r\njoin stores as s\r\non o.store_id = s.store_id\r\njoin hubs as h\r\non h.hub_id = s.hub_id\r\n ";
+    var data = db.Query(sql);
 
     if (IsPost)
     {
-        var dSql = "Delete from hubs where hub_id=@0";
-        var dDATA = db.Execute(dSql, Request.Form["delete"]);
-        if(dDATA == 1)
-                {
-                    <div class="alert-warning">Record Deleted!</div>
-                }
-           }
-    var data = db.Query(sql, Request.Form["SearchText"]);
+        var dSql = "DELETE FROM orders_new WHERE order_id=@0";
+        var dData = db.Execute(dSql, Request.Form["delete"]);
+
+        if (dData == 1)
+        {
+            <div class="alert alert-success">Order has been successfully deleted!</div>
+        }
+
+    }
+
+
 }
+<div class="jumbotron pt-1 pb-1 mt-2 ">
+    <h2 class="text-center">Hub Orders Report</h2>
+</div>
 
-@*@using WebMatrix.Data
 
-    @{
-        var db = Database.Open("FoodDB");
-        //var sql = "select * from orders join channels on orders. = deliveries.delivery_order_id where order_id = @0";
-        var sql = "select * from orders as o\r\njoin stores as s\r\non o.store_id = s.store_id\r\njoin hubs as h\r\non h.hub_id = s.hub_id\r\norder by h.hub_id; order_id =@0";
-        var recordID = Request.QueryString["id"];
-        var i = db.QuerySingle(sql, recordID);
 
-    }*@
-@if (data.Count() > 0)
-{
+<div class="row justify-content-center">
 
-    <div class="row justify-content-center">
-
-        <table class="table table-striped ">
+    <form method="post" action="/Home/OrderHubs">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">Order_ID</th>
@@ -45,33 +44,22 @@
 
             @foreach (var row in data)
             {
- 
-
-
-
-
-                <tbody>
+                <tbody id="test">
                     <tr>
                         <th scope="row">@row.order_id</th>
                         <th scope="row">@row.hub_id</th>
                         <th scope="row">@row.hub_name</th>
                         <th scope="row">@row.order_amount.ToString("C")</th>
-                        
+
 
                         <th>
                             <a class="btn btn-primary" href="" role="button" @row.hub_id>Edit </a>
-                            <button type="submit" name="delete" class="btn btn-outline-danger" value="@row.hub_id">Delete</button>
+                            <button type="submit" name="delete" class="btn btn-outline-danger" value="@row.order_id">Delete</button>
                         </th>
+
                     </tr>
                 </tbody>
-
-
             }
         </table>
-    </div>
-}
-else
-{
-    <h2 class="text-danger"> Ooops.....No matching records were returned!</h2>
-}
-<h2>Hub Orders Report</h2>
+    </form>
+</div>
