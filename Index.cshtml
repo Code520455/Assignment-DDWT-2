@@ -1,13 +1,14 @@
-﻿@using WebMatrix.Data
-<link href="https://bootswatch.com/5/flatly/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<!DOCTYPE HTML>
+<html lang="en">
+</html>
+@using WebMatrix.Data
+<link href="https://bootswatch.com/5/flatly/bootstrap.min.css" rel="stylesheet" type="text/css" >
 @{
     var db = Database.Open("FoodDB");
     var sql = "select * from orders as o left join stores as s\r\non o.store_id=s.store_id where o.order_id LIKE CONCAT(@0, '%') or o.order_status LIKE CONCAT(@0,'%') or o.order_amount LIKE CONCAT(@0,'%')";
-    //var sql = "select * from orders_new";
     var output = db.Query(sql, Request.Form["searchText"]);
 
-    //var order_status_sql = "select distinct order_status from orders";
-    //var order_status_data = db.Query(order_status_sql);
+
 }
 <main>
     <h2>All Orders</h2>
@@ -22,7 +23,7 @@
                         }
                     </select>*@
                 <div class="col-lg-9 mb-1">
-                    <input type="text" name="searchText" class="form-control" placeholder="SearchText" />
+                    <input type="text" name="searchText" class="form-control" placeholder="SearchText" >
                 </div>
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="submit">Search by Order Status</button>
@@ -58,3 +59,4 @@
         <h2 class="text-danger text-center">Oops! No matching orders found...</h2>
     }
 </main>
+</html>
