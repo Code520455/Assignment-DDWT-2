@@ -8,9 +8,8 @@
     var db = Database.Open("FoodDB");
     var pQuery = "select distinct payment_method from payments_new";
     var pData = db.Query(pQuery);
-    var sql = "select * from orders_new as o\r\njoin payments_new as p\r\non o.order_amount = p.payment_amount\r\njoin channels_new as c\r\non o.channel_id = c.channel_id\r\njoin stores_new as s\r\non s.store_id = o.store_id where p.payment_method LIKE CONCAT(@0, '%')";
-    var output = db.Query(sql, Request.Form["searchText"]);
-}
+    var sql = "select * from orders_new as o\r\njoin payments_new as p\r\non o.order_amount = p.payment_amount\r\njoin channels as c\r\non o.channel_id = c.channel_id\r\njoin stores as s\r\non s.store_id = o.store_id where p.payment_method LIKE CONCAT(@0,'%') and p.payment_method LIKE CONCAT(@1,'%')";
+    var output = db.Query(sql, Request.Form["selectText"], Request.Form["searchText"]);}
 
 <div class="jumbotron pt-1 pb-1 mt-2 ">
     <h2 class="text-center">Payment Analysis</h2>
@@ -23,7 +22,7 @@
         <div class="input-group">
             <div class="col-4">
                 <select name="searchText" class="form-control">
-                    <option>Payment Method...</option>
+                    <option>Select</option>
                     @foreach (var row in pData)
                     {
                         <option>@row.payment_method</option>
