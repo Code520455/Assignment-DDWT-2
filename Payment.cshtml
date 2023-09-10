@@ -1,4 +1,4 @@
-﻿@using WebMatrix.Data
+@using WebMatrix.Data
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <script src="../Scripts/jquery-3.5.1.js"></script>
@@ -6,9 +6,10 @@
 <script src="../Scripts/popper.js"></script>
 @{
     var db = Database.Open("FoodDB");
-    var sql = "select * from orders as o\r\njoin payments as p\r\non o.order_amount = p.payment_amount\r\njoin channels as c\r\non o.channel_id = c.channel_id\r\njoin stores as s\r\non s.store_id = o.store_id where p.payment_method LIKE CONCAT(@0, '%')";
-    var output = db.Query(sql, Request.Form["searchText"]);
-
+    var pQuery = "select distinct payment_method from payments_new";
+    var pData = db.Query(pQuery);
+    var sql = "select * from orders_new as o\r\njoin payments_new as p\r\non o.order_amount = p.payment_amount\r\njoin channels_new as c\r\non o.channel_id = c.channel_id\r\njoin stores_new as s\r\non s.store_id = o.store_id where p.payment_method LIKE CONCAT(@0, '%')";
+    var output = db.Query(sql, Request.Form["searchText1"]);
 }
 
 <div class="jumbotron pt-1 pb-1 mt-2 ">
@@ -18,10 +19,19 @@
 
 <div class="row">
     <form method="post" action="/Home/Payment">
-        <div class="input-group">
 
+        <div class="input-group">
+            <div class="col-4">
+                <select name="searchText" class="form-control">
+                    <option>Payment Method...</option>
+                    @foreach (var row in pData)
+                    {
+                        <option>@row.payment_method</option>
+                    }
+                </select>
+            </div>
             <div class="col-3 mb-1">
-                <input type="text" name="searchText" class="form-control" placeholder="SearchText" />
+                <input type="text" class="form-control" placeholder="SearchText"/>
             </div>
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="submit">Search by Payment Method</button>
@@ -29,10 +39,10 @@
         </div>
     </form>
 </div>
-
+<br />
 @foreach (var i in output)
 {
-    <div class="card" style="width: 16rem; margin:10px; padding:0 0">
+    <div class="card justify-content-lg-around" style=" display: inline-block; margin: 10px; padding:10px  ">
         <h5>Payment Details</h5>
         <p class="card-text">Payment ID:@i.payment_id</p>
         <p class="card-text">Payment Method:@i.payment_method</p>
@@ -40,25 +50,35 @@
         <p class="card-text">Payment Amount:@i.payment_amount</p>
         <p class="card-text">Payment Fee :@i.payment_fee</p>
 
-        <h5>Order Details</h5>
-        <p class="card-title">Order ID:@i.order_id</p>
-        <p class="card-text">Order Status:@i.order_status</p>
-        <p class="card-text">Order Amount:@i.order_amount</p>
+        <details>
+            <summary><b>Order Details</b></summary>
+            <p>
+            <p class="card-title">Order ID:@i.order_id</p>
+            <p class="card-text">Order Status:@i.order_status</p>
+            <p class="card-text">Order Amount:@i.order_amount</p>
+            </p>
+        </details>
 
+        <details>
+            <summary><b>Channel Details</b></summary>
+            <p>
+            <p class="card-text">Channel ID:@i.channel_id</p>
+            <p class="card-text">Channel Name:@i.channel_name</p>
+            <p class="card-text">Channel Type:@i.channel_type</p>
+            </p>
+        </details>
 
-        <h5>Channel Details</h5>
-        <p class="card-text">Channel ID:@i.channel_id</p>
-        <p class="card-text">Channel Name:@i.channel_name</p>
-        <p class="card-text">Cahnnel Type:@i.channel_type</p>
-
-        <h5>Store Details</h5>
-        <p class="card-text">Store ID:@i.store_id</p>
-        <p class="card-text">Store Name:@i.store_name</p>
-        <p class="card-text">Store Segment:@i.store_segment</p>
-        <p class="card-text">Store Plan Price:@i.store_plan_price</p>
-        <p class="card-text">Store Latitude:@i.store_latitude</p>
+        <details>
+            <summary><b>Store Details</b></summary>
+            <p>
+            <p class="card-text">Store ID:@i.store_id</p>
+            <p class="card-text">Store Name:@i.store_name</p>
+            <p class="card-text">Store Segment:@i.store_segment</p>
+            <p class="card-text">Store Plan Price:@i.store_plan_price</p>
+            <p class="card-text">Store Latitude:@i.store_latitude</p>
+            </p>
+        </details>
 
     </div>
 
 }
-
