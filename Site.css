@@ -4385,7 +4385,7 @@ tbody.collapse.show {
     word-wrap: break-word;
     background-color: #fff;
     background-clip: border-box;
-    border: 1px solid rgba(0,0,0,.125);
+    border: 2px solid rgba(247, 36, 11 );
     border-radius: .25rem
 }
 
@@ -4885,7 +4885,7 @@ tbody.collapse.show {
 .jumbotron {
     padding: 2rem 1rem;
     margin-bottom: 2rem;
-    background-color: #e9ecef;
+    background-color: #B5AAEB;
     border-radius: .3rem
 }
 
@@ -9063,4 +9063,3 @@ a.text-dark:focus, a.text-dark:hover {
         border: 1px solid #ddd !important
     }
 }
-
