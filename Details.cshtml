@@ -1,32 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-</html>
-@using WebMatrix.Data
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<script src="../Scripts/jquery-3.5.1.js"></script>
-<script src="../Scripts/bootstrap.js"></script>
-<script src="../Scripts/popper.js"></script>
-@{
-    var db = Database.Open("FoodDB");
-    var sql = "select * from drivers as d join deliveries as deli on d.driver_id = deli.driver_id join orders as o on deli.delivery_order_id = o.order_id join payments as p on o.order_id = p.payment_order_id join channels as c on o.channel_id = c.channel_id where order_id=@0";
-    var recordID = Request.QueryString["id"];
-    var i = db.QuerySingle(sql, recordID);
+<link rel="stylesheet" href="/Content/Site.css">
+<title>
+    @using WebMatrix.Data
+    @{
+        var db = Database.Open("FoodDB");
+        var sql = "select * from drivers as d join deliveries as deli on d.driver_id = deli.driver_id join orders as o on deli.delivery_order_id = o.order_id join payments as p on o.order_id = p.payment_order_id join channels as c on o.channel_id = c.channel_id where order_id=@0";
+        var recordID = Request.QueryString["id"];
+        var i = db.QuerySingle(sql, recordID);
 
-    if (IsPost)
-    {
-        var uSql = "update deliveries set delivery_distance_meters = @0, delivery_status = @1 where delivery_id = @2;";
-        var uData = db.Execute(uSql,
-            Request.Form["deliveryDistance"],
-            Request.Form["deliveryStatus"],
-            Request.Form["deliveryId"],
-            Request.Form["update"]
-            );
+        if (IsPost)
+        {
+            var uSql = "update deliveries set delivery_distance_meters = @0, delivery_status = @1 where delivery_id = @2;";
+            var uData = db.Execute(uSql,
+                Request.Form["deliveryDistance"],
+                Request.Form["deliveryStatus"],
+                Request.Form["deliveryId"],
+                Request.Form["update"]
+                );
 
-        if (uData == 1)
-        { <div class="alert alert-success">Updated!</div> }
+            if (uData == 1)
+            { <div class="alert alert-success">Updated!</div> }
+        }
     }
-}
-
+</title>
 
 <main class="container">
     <div class="jumbotron pt-1 pb-1 mt-2">
