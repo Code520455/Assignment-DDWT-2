@@ -1,24 +1,28 @@
 <!DOCTYPE HTML>
 <html lang="en">
-</html>
-@using WebMatrix.Data
-<link href="https://bootswatch.com/5/flatly/bootstrap.min.css" rel="stylesheet" type="text/css" >
-@{
-    var db = Database.Open("FoodDB");
-    var sql = "select * from orders as o left join stores as s\r\non o.store_id=s.store_id where o.order_id LIKE CONCAT(@0, '%') or o.order_status LIKE CONCAT(@0,'%') or o.order_amount LIKE CONCAT(@0,'%')";
-    var output = db.Query(sql, Request.Form["searchText"]);
+
+<link rel="stylesheet" href="/Content/Site.css">
+<title>
+    @using WebMatrix.Data
+
+    @{
+        var db = Database.Open("FoodDB");
+        var sql = "select * from orders_new as o left join stores as s\r\non o.store_id=s.store_id where o.order_id LIKE CONCAT(@0, '%') or o.order_status LIKE CONCAT(@0,'%') or o.order_amount LIKE CONCAT(@0,'%')";
+        var output = db.Query(sql, Request.Form["searchText"]);
 
 
-}
+    }
+</title>
 <main>
-    <h2>All Orders</h2>
-
+    <div class="jumbotron pt-1 pb-1 mt-2">
+        <h2 class="text-center">Details Page</h2>
+    </div>
     <div class="row">
         <form method="post" action="/Home/Index">
             <div class="input-group">
 
                 <div class="col-lg-9 mb-1">
-                    <input type="text" name="searchText" class="form-control" placeholder="SearchText" >
+                    <input type="text" name="searchText" class="form-control" placeholder="SearchText">
                 </div>
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="submit">Search by Order Status</button>
