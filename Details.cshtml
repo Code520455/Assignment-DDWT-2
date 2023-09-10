@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
 </html>
 @using WebMatrix.Data
@@ -8,53 +8,96 @@
 <script src="../Scripts/popper.js"></script>
 @{
     var db = Database.Open("FoodDB");
-    var sql = "select * from orders_new as o left join stores as s\r\non o.store_id=s.store_id where o.order_id LIKE CONCAT(@0, '%') or o.order_status LIKE CONCAT(@0,'%') or o.order_amount LIKE CONCAT(@0,'%')";
-    var output = db.Query(sql, Request.Form["searchText"]);
+    var sql = "select * from drivers as d join deliveries as deli on d.driver_id = deli.driver_id join orders as o on deli.delivery_order_id = o.order_id join payments as p on o.order_id = p.payment_order_id join channels as c on o.channel_id = c.channel_id where order_id=@0";
+    var recordID = Request.QueryString["id"];
+    var i = db.QuerySingle(sql, recordID);
 
+    if (IsPost)
+    {
+        var uSql = "update deliveries set delivery_distance_meters = @0, delivery_status = @1 where delivery_id = @2;";
+        var uData = db.Execute(uSql,
+            Request.Form["deliveryDistance"],
+            Request.Form["deliveryStatus"],
+            Request.Form["deliveryId"],
+            Request.Form["update"]
+            );
 
+        if (uData == 1)
+        { <div class="alert alert-success">Updated!</div> }
+    }
 }
-<main class="container">
-<div class="jumbotron pt-1 pb-1 mt-2 ">
-    <h2 class="text-center">Payment Analysis</h2>
-</div>
-    <div class="row">
-        <div class="col-"
-        <form method="post" action="/Home/Index">
-            <div class="input-group">
 
-                <div class="col-7 mb-1">
-                    <input type="text" name="searchText" class="form-control" placeholder="SearchText">
-                </div>
-                <div class="col-3">
-                    <button class="btn btn-primary" type="submit">Search by Order Status</button>
-                </div>
-            </div>
-        </form>
+
+<main class="container">
+    <div class="jumbotron pt-1 pb-1 mt-2">
+        <h2 class="text-center">Details Page</h2>
     </div>
 
-    @if (output.Count() > 0)
+    <form class="rown form-group" method="post" action="/Home/Details?id">
+        <div class="row justify-content-start">
+        </div>
+    </form>
+
+    @if (i != null)
     {
-        <div class="row">
-            @foreach (var i in output)
-            {
-                <div class="card" style="width: 15rem; margin:10px; padding:0 0">
-                    <h5 class="card-header">Order ID:@i.order_id</h5>
-                    <div class="card-body">
-                        <img class="card-img" src="https://img.freepik.com/free-vector/blank-junk-food-frame-background_53876-99223.jpg?w=900&t=st=1694265433~exp=1694266033~hmac=567efab42c11941d2c97a753ab6db42ec2216c5bb1e17f7f00458d4bdf39eca3" alt="Card image cap">
-                        <p class="card-title">Order Status:@i.order_status</p>
-                        <p class="card-text">Order Amount:@i.order_amount.ToString("C")</p>
-                        <p class="card-text">Channel: @i.channel_id</p>
-                        <h6>Store Details</h6>
-                        <p class="card-text">Store Name:@i.store_name</p>
-                        <p class="card-text">Store Segment:@i.store_segment</p>
-                        <a href="/Home/Details?id=@i.order_id" class="btn btn-primary">See details</a>
-                    </div>
-                </div>
-            }
+        <div class="row justify-content-center">
+
+            <div class="card ">
+                <details>
+                    <summary><b>Order Details</b></summary>
+
+                    <p class="card-title">Order ID: @i.order_id</p>
+                    <p class="card-text">Order Status: @i.order_status</p>
+                    <p class="card-text">Order Amount: @i.order_amount</p>
+
+                </details>
+
+
+                <details>
+                    <summary><b>Channel Details</b></summary>
+
+                    <p class="card-text">Channel ID: @i.channel_id</p>
+                    <p class="card-text">Channel Name: @i.channel_name</p>
+                    <p class="card-text">Cahnnel Type: @i.channel_type</p>
+
+                </details>
+                <details>
+                    <summary><b>Delivery Details</b></summary>
+
+                    <p class="card-text">Delivery ID: @i.delivery_id</p>
+                    <p class="card-text">Delivery Order ID: @i.delivery_order_id</p>
+                    <p class="card-text">Delivery Distance (meters): @i.delivery_distance_meters</p>
+                    <p class="card-text">Delivery Status: @i.delivery_status</p>
+
+                    <details>
+                        <summary><b>Edit</b></summary>
+                        <div>
+                            <form method="post">
+                                <input type="text" name="deliveryId" class="form-control" value=@i.delivery_id placeholder=@i.delivery_id>
+                                <input type="text" name="deliveryDistance" class="form-control" placeholder="Delivery Distance (meters)">
+                                <input type="text" name="deliveryStatus" class="form-control" placeholder="Delivery Status">
+                                <button class="btn btn-outline-secondary" type="submit" value="update">Update</button>
+                            </form>
+                        </div>
+                    </details>
+                </details>
+
+                <details>
+                    <summary><b>Driver Details</b></summary>
+
+                    <p class="card-text">Driver ID: @i.driver_id</p>
+                    <p class="card-text">Driver Modal: @i.driver_modal</p>
+                    <p class="card-text">Driver Type: @i.driver_type</p>
+
+                </details>
+
+            </div>
         </div>
     }
     else
     {
-        <h2 class="text-danger text-center">Oops! No matching orders found...</h2>
+        <h2 class="text-danger text-center">Oops - That order was not found!</h2>
+
     }
+
 </main>
