@@ -9,7 +9,7 @@
     var pQuery = "select distinct payment_method from payments_new";
     var pData = db.Query(pQuery);
     var sql = "select * from orders_new as o\r\njoin payments_new as p\r\non o.order_amount = p.payment_amount\r\njoin channels_new as c\r\non o.channel_id = c.channel_id\r\njoin stores_new as s\r\non s.store_id = o.store_id where p.payment_method LIKE CONCAT(@0, '%')";
-    var output = db.Query(sql, Request.Form["searchText1"]);
+    var output = db.Query(sql, Request.Form["searchText"]);
 }
 
 <div class="jumbotron pt-1 pb-1 mt-2 ">
